@@ -4,17 +4,16 @@ const bcryptjs = require('bcryptjs');
 const Usuario = require('../models/usuario');
 
 
-const usuariosGet = (req = request, res = response) => {
+const usuariosGet = async (req = request, res = response) => {
 
-    const {q, nombre = 'No name', apikey, page, limit} = req.query;
+    // const {q, nombre = 'No name', apikey, page, limit} = req.query;
+    const { limite = 5, desde = 0 } = req.query;
+    const usuarios = await Usuario.find()
+        .skip(Number( desde ))
+        .limit(Number( limite ));
 
     res.json({
-        msg: 'get API - controlador',
-        q,
-        nombre,
-        apikey,
-        page,
-        limit
+        usuarios
     });
 }
 
@@ -37,14 +36,22 @@ const usuariosPost = async (req, res = response) => {
     });
 }
 
-const usuariosPut = (req, res = response) => {
+const usuariosPut = async (req, res = response) => {
 
-    const id = req.params.id;
+    const { id } = req.params;
+    const { _id, password, google, corre, ...resto } = req.body;
 
-    res.json({
-        msg: 'Put API - controlador',
-        id
-    });
+    if ( password ) {
+        // Encriptar la pass
+        const salt = bcryptjs.genSaltSync();
+        resto.password = bcryptjs.hashSync( password, salt );
+    }
+
+    const usuario = await Usuario.findByIdAndUpdate( id, resto );
+
+
+
+    res.json(usuario);
 }
 const usuariosPatch = (req, res = response) => {
 
