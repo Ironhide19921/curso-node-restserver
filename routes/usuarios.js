@@ -12,6 +12,7 @@ const { usuariosGet,
         usuariosPost,
         usuariosDelete,
         usuariosPatch } = require('../controllers/usuarios');
+const usuario = require('../models/usuario');
 
 const router = Router();
 
@@ -34,7 +35,11 @@ router.post('/', [
         validarCampos
 ] ,usuariosPost);
 
-router.delete('/', usuariosDelete);
+router.delete('/:id', [
+        check('id', 'No es un ID válido').isMongoId(),
+        check('id').custom( existeUsuarioPorId ),
+        validarCampos
+],usuariosDelete );
 
 router.patch('/', usuariosPatch);
 
