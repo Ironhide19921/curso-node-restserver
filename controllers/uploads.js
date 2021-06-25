@@ -122,6 +122,7 @@ const actualizarImagenCloudinary = async(req, res = response) => {
 
 
     res.json( modelo );
+// Intento subida heroku cloudinary
 
 }
 
