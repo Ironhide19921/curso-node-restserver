@@ -48,7 +48,7 @@ const login = async(req, res = response) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            msg: 'Hable cone la dministracdor'
+            msg: 'Hable con el administrador'
         })
     }
 
@@ -62,11 +62,11 @@ const googleSignin = async(req, res = response) => {
     try {
         const { correo, nombre, img } = await googleVerify( id_token );
 
-        let usuario = await  Usuario.findOne({ correo });
+        let usuario = await Usuario.findOne({ correo });
         
         if ( !usuario ) {
             //Tengo que crearlo
-            const data = { 
+            const data = {
                 nombre,
                 correo,
                 password: ':P',
@@ -86,21 +86,20 @@ const googleSignin = async(req, res = response) => {
         }
 
          // Generar el JWT
-         const token = await generarJWT( usuario.id );
-
-    
+        const token = await generarJWT( usuario.id );
 
         res.json({
-           usuario,
-           token
+        usuario,
+        token
         });
+
     } catch (error) {
         res.status(400).json({
             msg: 'Token de Google no es válido'
         })
             
     }
-  
+
 
 }
 
